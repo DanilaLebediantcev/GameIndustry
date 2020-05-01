@@ -1,0 +1,21 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="entity.Company" table="COMPANY">
+        <id name="id" type="int" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="name" type="string"/>
+        <property name="numberOfEmployees" column="number_Of_Employees" type="int"/>
+        <property name="profit" column="profit" type="int"/>
+        <one-to-one name="boss"  foreign-key="id" cascade="delete-orphan"/>
+<!--        <many-to-one name="boss" class="entity.Person" column="ID"-->
+<!--                     not-null="true" cascade="all"/>-->
+
+
+
+    </class>
+</hibernate-mapping>
