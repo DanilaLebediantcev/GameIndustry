@@ -11,6 +11,7 @@
         <mapping class="entity.Person"></mapping>
         <mapping class="entity.Company"></mapping>
         <mapping class="entity.Game"></mapping>
+        <mapping class="entity.Genre"></mapping>
 
     </session-factory>
 </hibernate-configuration>

@@ -1,50 +1,51 @@
 package Reposiroty;
 
-import dao.GameDAO;
+import dao.GenreDAO;
 import db.HibernateConnection;
-import entity.Company;
 import entity.Game;
+import entity.Genre;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.List;
 
-public class GameRepository implements GameDAO {
+public class GenreRepository implements GenreDAO {
     @Override
-    public void addGame(Game game) {
+    public void addGenre(Genre genre) {
         Session session = HibernateConnection.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(game);
+        session.save(genre);
+        transaction.commit();
+        session.close();
+
+    }
+
+    @Override
+    public void updateGenre(Genre genre) {
+        Session session = HibernateConnection.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        session.update(genre);
         transaction.commit();
         session.close();
     }
 
     @Override
-    public void updateGame(Game game) {
+    public void deleteGenre(Genre genre) {
         Session session = HibernateConnection.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.update(game);
+        session.delete(genre);
         transaction.commit();
         session.close();
     }
 
     @Override
-    public void deleteGame(Game game) {
-        Session session = HibernateConnection.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        session.delete(game);
-        transaction.commit();
-        session.close();
+    public Genre getGenreById(int id) {
+        return HibernateConnection.getSessionFactory().openSession().get(Genre.class,id);
     }
 
     @Override
-    public Game getGameById(int id) {
-        return HibernateConnection.getSessionFactory().openSession().get(Game.class,id);
-    }
-
-    @Override
-    public List<Game> getAllGames() {
-        List<Game> gameList = HibernateConnection.getSessionFactory().openSession().createQuery("FROM Game").list();
-        return gameList;
+    public List<Genre> getAllGenres() {
+        List<Genre> genreList = HibernateConnection.getSessionFactory().openSession().createQuery("FROM Genre ").list();
+        return  genreList;
     }
 }

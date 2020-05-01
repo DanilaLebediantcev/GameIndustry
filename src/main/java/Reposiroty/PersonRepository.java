@@ -31,8 +31,8 @@ public class PersonRepository implements PersonDAO {
     }
 
     @Override
-    public Person getPersonById(Person person) {
-        return HibernateConnection.getSessionFactory().openSession().get(Person.class,person.getId());
+    public Person getPersonById(int id) {
+        return HibernateConnection.getSessionFactory().openSession().get(Person.class,id);
     }
 
     @Override

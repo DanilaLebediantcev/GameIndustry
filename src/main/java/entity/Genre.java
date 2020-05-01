@@ -1,33 +1,29 @@
 package entity;
 
 import javax.persistence.*;
-
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "PERSON")
-public class Person {
-    public Person() {
-    }
-
-    public Person(String name) {
-        this.name = name;
-    }
-
+@Table(name = "GENRE")
+public class Genre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "person_id")
+    @Column(name = "genre_id")
     private int id;
 
     @Column(name = "name")
     private String name;
 
-    @OneToOne(mappedBy = "boss",orphanRemoval = false)
-    private Company company;
+    @ManyToMany(mappedBy = "genreList")
+    List<Game> gameList = new ArrayList<>();
 
-    @PreRemove
-    public void deleteCompanyFromPerson(){
-        this.company = null;
+    public Genre() {
+    }
+
+    public Genre(String name) {
+        this.name = name;
     }
 
     public int getId() {
@@ -46,20 +42,19 @@ public class Person {
         this.name = name;
     }
 
-    public Company getCompany() {
-        return company;
+    public List<Game> getGameList() {
+        return gameList;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
+    public void setGameList(List<Game> gameList) {
+        this.gameList = gameList;
     }
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "Genre{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-//                ", company=" + company +
                 '}';
     }
 }

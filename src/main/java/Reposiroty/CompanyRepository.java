@@ -33,8 +33,8 @@ public class CompanyRepository implements CompanyDAO {
     }
 
     @Override
-    public Company getCompanyById(Company company) {
-        return HibernateConnection.getSessionFactory().openSession().get(Company.class,company.getId());
+    public Company getCompanyById(int id) {
+        return HibernateConnection.getSessionFactory().openSession().get(Company.class,id);
 
     }
 
@@ -53,20 +53,4 @@ public class CompanyRepository implements CompanyDAO {
         session.close();
     }
 
-//    @Override
-//    public void addGameToGamesList(Game game) {
-//        Session session = HibernateConnection.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        Company company = game.getCompany();
-//        company.getGamesList().add(game);
-//        game.setCompany(company);
-//        session.update(company);
-//        transaction.commit();
-//        session.close();
-//    }
-//
-//    @Override
-//    public void deleteGameFromGamesList(Game game) {
-//
-//    }
 }

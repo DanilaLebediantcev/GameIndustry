@@ -1,6 +1,8 @@
 package entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "GAME")
@@ -20,15 +22,19 @@ public class Game {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "game_id")
     private int id;
 
     @Column(name = "name" , nullable = false ,unique = true)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinColumn(name = "fk_company")
     private Company company;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.EAGER)
+    @JoinTable(name = "GAME_GENRE",joinColumns = @JoinColumn(name = "game_id" ),inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private List<Genre> genreList = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -52,6 +58,24 @@ public class Game {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public List<Genre> getGenreList() {
+        return genreList;
+    }
+
+    public void setGenreList(List<Genre> genreList) {
+        this.genreList = genreList;
+    }
+
+    public void addGenreToGame(Genre genre){
+        genreList.add(genre);
+        genre.getGameList().add(this);
+    }
+
+    public void deleteGenreFromGame(Genre genre){
+        genreList.remove(genre);
+        genre.getGameList().remove(this);
     }
 
     @Override
