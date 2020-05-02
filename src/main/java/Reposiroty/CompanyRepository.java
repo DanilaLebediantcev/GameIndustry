@@ -1,19 +1,17 @@
 package Reposiroty;
 
-import dao.CompanyDAO;
+import dao.DAO;
 import db.HibernateConnection;
 import entity.Company;
-import entity.Game;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-
 import java.util.List;
 
-public class CompanyRepository implements CompanyDAO {
+public class CompanyRepository implements DAO<Company> {
 
     @Override
-    public void addCompany(Company company) {
+    public void add(Company company) {
         Session session = HibernateConnection.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         session.save(company);
@@ -23,9 +21,9 @@ public class CompanyRepository implements CompanyDAO {
     }
 
     @Override
-    public void updateCompany(Company company) {
+    public void update(Company company) {
         Session session = HibernateConnection.getSessionFactory().openSession();
-        Transaction transaction= session.beginTransaction();
+        Transaction transaction = session.beginTransaction();
         session.update(company);
         transaction.commit();
         session.close();
@@ -33,19 +31,19 @@ public class CompanyRepository implements CompanyDAO {
     }
 
     @Override
-    public Company getCompanyById(int id) {
-        return HibernateConnection.getSessionFactory().openSession().get(Company.class,id);
+    public Company getById(int id) {
+        return HibernateConnection.getSessionFactory().openSession().get(Company.class, id);
 
     }
 
     @Override
-    public List<Company> getAllCompany() {
+    public List<Company> getAll() {
         List<Company> companyList = HibernateConnection.getSessionFactory().openSession().createQuery("FROM Company").list();
         return companyList;
     }
 
     @Override
-    public void deleteCompany(Company company) {
+    public void delete(Company company) {
         Session session = HibernateConnection.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         session.delete(company);

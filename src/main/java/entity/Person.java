@@ -22,7 +22,7 @@ public class Person {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(mappedBy = "boss",orphanRemoval = false)
+    @OneToOne(mappedBy = "boss",cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private Company company;
 
     @PreRemove

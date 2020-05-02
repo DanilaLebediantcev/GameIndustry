@@ -1,8 +1,8 @@
 package entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "GENRE")
@@ -16,8 +16,8 @@ public class Genre {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(mappedBy = "genreList")
-    List<Game> gameList = new ArrayList<>();
+    @ManyToMany(mappedBy = "genreList", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    Set<Game> gameList = new HashSet<>();
 
     public Genre() {
     }
@@ -42,13 +42,14 @@ public class Genre {
         this.name = name;
     }
 
-    public List<Game> getGameList() {
+    public Set<Game> getGameList() {
         return gameList;
     }
 
-    public void setGameList(List<Game> gameList) {
+    public void setGameList(Set<Game> gameList) {
         this.gameList = gameList;
     }
+
 
     @Override
     public String toString() {

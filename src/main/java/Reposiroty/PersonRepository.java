@@ -1,6 +1,6 @@
 package Reposiroty;
 
-import dao.PersonDAO;
+import dao.DAO;
 import db.HibernateConnection;
 import entity.Company;
 import entity.Person;
@@ -9,11 +9,11 @@ import org.hibernate.Transaction;
 
 import java.util.List;
 
-public class PersonRepository implements PersonDAO {
+public class PersonRepository implements DAO<Person> {
 
 
     @Override
-    public void addPerson(Person person) {
+    public void add(Person person) {
         Session session = HibernateConnection.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         session.save(person);
@@ -22,30 +22,38 @@ public class PersonRepository implements PersonDAO {
     }
 
     @Override
-    public void updatePerson(Person person) {
+    public void update(Person person) {
         Session session = HibernateConnection.getSessionFactory().openSession();
-        Transaction transaction= session.beginTransaction();
+        Transaction transaction = session.beginTransaction();
         session.update(person);
         transaction.commit();
         session.close();
     }
 
     @Override
-    public Person getPersonById(int id) {
-        return HibernateConnection.getSessionFactory().openSession().get(Person.class,id);
+    public Person getById(int id) {
+        return HibernateConnection.getSessionFactory().openSession().get(Person.class, id);
     }
 
     @Override
-    public List<Person> getAllPersons() {
+    public List<Person> getAll() {
         List<Person> personList = HibernateConnection.getSessionFactory().openSession().createQuery("FROM Person").list();
         return personList;
     }
 
     @Override
-    public void deletePerson(Person person) {
+    public void delete(Person person) {
         Session session = HibernateConnection.getSessionFactory().openSession();
+        CompanyRepository companyRepository = new CompanyRepository();
         Transaction transaction = session.beginTransaction();
-        session.remove(person);
+        Company company = person.getCompany();
+        company.setBoss(null);
+        companyRepository.update(company);
+        transaction.commit();
+        session.close();
+        session = HibernateConnection.getSessionFactory().openSession();
+        transaction = session.beginTransaction();
+        session.delete(person);
         transaction.commit();
         session.close();
     }

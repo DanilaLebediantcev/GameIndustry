@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "COMPANY")
-public class Company  {
+public class Company {
 
     public Company() {
     }
@@ -31,7 +31,7 @@ public class Company  {
     @Column(name = "company_id")
     private int id;
 
-    @Column(name = "name", nullable = false,unique = true)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "number_of_emplyees")
@@ -40,11 +40,11 @@ public class Company  {
     @Column(name = "profit")
     private int profit;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "boss_id" )
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "boss_id")
     private Person boss;
 
-    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Game> gamesList = new ArrayList<>();
 
 
@@ -85,17 +85,16 @@ public class Company  {
         return boss;
     }
 
-    public void setBoss(Person boss) {
-        if(boss == null)
-        {
-            if(this.boss!=null){
-                this.setBoss(null);
+    public void setBoss(Person person) {
+        if (person == null) {
+            if (this.boss != null) {
+                this.boss.setCompany(null);
             }
         } else {
-            boss.setCompany(this);
+            person.setCompany(this);
         }
 
-        this.boss = boss;
+        this.boss = person;
     }
 
     public List<Game> getGamesList() {
@@ -106,12 +105,12 @@ public class Company  {
         this.gamesList = games;
     }
 
-    public void addGameToGamesList(Game game){
+    public void addGameToGamesList(Game game) {
         gamesList.add(game);
         game.setCompany(this);
     }
 
-    public void deleteGameFromGamesList(Game game){
+    public void deleteGameFromGamesList(Game game) {
         gamesList.remove(game);
         game.setCompany(null);
     }
@@ -119,11 +118,19 @@ public class Company  {
 
     @Override
     public String toString() {
-        return "Company{" +
-                "name='" + name + '\'' +
-                ", numberOfEmployees=" + numberOfEmployees +
-                ", profit=" + profit +
-                ", boss=" + boss.getName() +
-                '}';
+        if (boss != null) {
+            return "Company{" +
+                    "name='" + name + '\'' +
+                    ", numberOfEmployees=" + numberOfEmployees +
+                    ", profit=" + profit +
+                    ", boss=" + boss.getName() +
+                    '}';
+        } else {
+            return "Company{" +
+                    "name='" + name + '\'' +
+                    ", numberOfEmployees=" + numberOfEmployees +
+                    ", profit=" + profit +
+                    '}';
+        }
     }
 }

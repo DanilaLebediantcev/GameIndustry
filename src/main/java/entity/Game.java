@@ -1,8 +1,8 @@
 package entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "GAME")
@@ -25,16 +25,16 @@ public class Game {
     @Column(name = "game_id")
     private int id;
 
-    @Column(name = "name" , nullable = false ,unique = true)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "fk_company")
     private Company company;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.EAGER)
-    @JoinTable(name = "GAME_GENRE",joinColumns = @JoinColumn(name = "game_id" ),inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private List<Genre> genreList = new ArrayList<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "GAME_GENRE", joinColumns = @JoinColumn(name = "game_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private Set<Genre> genreList = new HashSet<>();
 
     public int getId() {
         return id;
@@ -60,27 +60,28 @@ public class Game {
         this.company = company;
     }
 
-    public List<Genre> getGenreList() {
+    public Set<Genre> getGenreList() {
         return genreList;
     }
 
-    public void setGenreList(List<Genre> genreList) {
+    public void setGenreList(Set<Genre> genreList) {
         this.genreList = genreList;
     }
 
-    public void addGenreToGame(Genre genre){
+    public void addGenreToGame(Genre genre) {
         genreList.add(genre);
         genre.getGameList().add(this);
     }
 
-    public void deleteGenreFromGame(Genre genre){
+    public void deleteGenreFromGame(Genre genre) {
         genreList.remove(genre);
         genre.getGameList().remove(this);
     }
 
+
     @Override
     public String toString() {
-        if(company == null){
+        if (company == null) {
             return "Game{" +
                     "id=" + id +
                     ", name='" + name +
