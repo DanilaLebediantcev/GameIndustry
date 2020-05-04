@@ -50,8 +50,6 @@ public class PersonRepository implements DAO<Person> {
         company.setBoss(null);
         companyRepository.update(company);
         transaction.commit();
-        session.close();
-        session = HibernateConnection.getSessionFactory().openSession();
         transaction = session.beginTransaction();
         session.delete(person);
         transaction.commit();

@@ -3,10 +3,16 @@ package entity;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
 @Table(name = "COMPANY")
+@NamedQueries({
+        @NamedQuery(name = "Company.getByName",query = "SELECT g FROM Company g WHERE g.name = :name"),
+        @NamedQuery(name = "Company.getById",query = "SELECT g FROM Company g WHERE g.id = :id"),
+        @NamedQuery(name = "Company.getAll",query = "SELECT g FROM Company g")
+})
 public class Company {
 
     public Company() {
@@ -114,7 +120,6 @@ public class Company {
         gamesList.remove(game);
         game.setCompany(null);
     }
-
 
     @Override
     public String toString() {

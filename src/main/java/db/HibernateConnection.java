@@ -13,11 +13,6 @@ public class HibernateConnection {
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration().configure();
-//                configuration.addAnnotatedClass(Company.class);
-//                configuration.addAnnotatedClass(Person.class);
-//                StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
-//                sessionFactory = configuration.buildSessionFactory(builder.build());
-
                 sessionFactory = configuration.buildSessionFactory();
             } catch (Exception e) {
                 System.out.println("Исключение!" + e);

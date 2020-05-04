@@ -2,10 +2,16 @@ package entity;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "GENRE")
+@Table(name = "GENRE")@NamedQueries({
+        @NamedQuery(name = "Genre.getByName",query = "SELECT g FROM Game g WHERE g.name = :name"),
+        @NamedQuery(name = "Genre.getById",query = "SELECT g FROM Genre g WHERE g.id = :id"),
+        @NamedQuery(name = "Genre.getAll",query = "SELECT g FROM Genre g")
+})
+
 public class Genre {
 
     @Id
@@ -50,6 +56,19 @@ public class Genre {
         this.gameList = gameList;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Genre genre = (Genre) o;
+        return id == genre.id &&
+                name.equals(genre.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 
     @Override
     public String toString() {
