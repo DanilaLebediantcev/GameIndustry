@@ -18,13 +18,13 @@ public class Company {
     public Company() {
     }
 
-    public Company(String name, int numberOfEmployees, int profit) {
+    public Company(String name, int numberOfEmployees, Long profit) {
         this.name = name;
         this.numberOfEmployees = numberOfEmployees;
         this.profit = profit;
     }
 
-    public Company(String name, int numberOfEmployees, int profit, Person boss) {
+    public Company(String name, int numberOfEmployees, Long profit, Person boss) {
         this.name = name;
         this.numberOfEmployees = numberOfEmployees;
         this.profit = profit;
@@ -35,7 +35,7 @@ public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "company_id")
-    private int id;
+    private Long id;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -44,7 +44,7 @@ public class Company {
     private int numberOfEmployees;
 
     @Column(name = "profit")
-    private int profit;
+    private Long profit;
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "boss_id")
@@ -54,11 +54,11 @@ public class Company {
     private List<Game> gamesList = new ArrayList<>();
 
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -79,11 +79,11 @@ public class Company {
         this.numberOfEmployees = numberOfEmployees;
     }
 
-    public int getProfit() {
+    public Long getProfit() {
         return profit;
     }
 
-    public void setProfit(int profit) {
+    public void setProfit(Long profit) {
         this.profit = profit;
     }
 

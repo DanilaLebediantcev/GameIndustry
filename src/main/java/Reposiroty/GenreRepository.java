@@ -32,11 +32,12 @@ public class GenreRepository implements DAO<Genre> {
     @Override
     public void delete(Genre genre) {
         Session session = HibernateConnection.getSessionFactory().openSession();
-        GameRepository gameRepository = new GameRepository();
         Transaction transaction = session.beginTransaction();
         for (Game game : genre.getGameList()) {
             game.getGenreList().remove(genre);
+            game.getGenreList();
             genre.getGameList().remove(game);
+            genre.getGameList();
             session.update(genre);
             session.update(game);
         }

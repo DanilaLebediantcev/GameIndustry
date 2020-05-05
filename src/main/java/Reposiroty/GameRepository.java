@@ -3,6 +3,7 @@ package Reposiroty;
 import dao.DAO;
 import db.HibernateConnection;
 import entity.Game;
+import entity.Genre;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -31,6 +32,12 @@ public class GameRepository implements DAO<Game> {
     public void delete(Game game) {
         Session session = HibernateConnection.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
+        for (Genre genre : game.getGenreList()) {
+            genre.getGameList().remove(game);
+            game.getGenreList().remove(genre);
+            session.update(game);
+            session.update(genre);
+        }
         session.delete(game);
         transaction.commit();
         session.close();
@@ -46,4 +53,16 @@ public class GameRepository implements DAO<Game> {
         List<Game> gameList = HibernateConnection.getSessionFactory().openSession().createQuery("FROM Game").list();
         return gameList;
     }
+
+//    @Override
+//    public void addGameToCompanyGamesList(Game game) {
+//        Session session = HibernateConnection.getSessionFactory().openSession();
+//        Transaction transaction = session.beginTransaction();
+//        Company company = game.getCompany();
+//        company.addGameToGamesList(game);
+//        session.update(company);
+//        transaction.commit();
+//        session.close();
+//
+//    }
 }

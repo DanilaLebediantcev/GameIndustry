@@ -17,12 +17,12 @@ public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "genre_id")
-    private int id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(mappedBy = "genreList", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "genreList", cascade = CascadeType.PERSIST)
     Set<Game> gameList = new HashSet<>();
 
     public Genre() {
@@ -32,11 +32,11 @@ public class Genre {
         this.name = name;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

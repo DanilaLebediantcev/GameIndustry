@@ -10,8 +10,7 @@ import java.util.Objects;
         @NamedQuery(name = "Person.getByName",query = "SELECT p FROM Person p WHERE p.name = :name"),
         @NamedQuery(name = "Person.getById",query = "SELECT p FROM Person p WHERE p.id = :id"),
         @NamedQuery(name = "Person.getAll",query = "SELECT p FROM Person p")
-}
-)
+})
 public class Person {
     public Person() {
     }
@@ -20,16 +19,20 @@ public class Person {
         this.name = name;
     }
 
+    public Person(String name, Company company) {
+        this.name = name;
+        this.company = company;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "person_id")
-    private int id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
 
-    @OneToOne(mappedBy = "boss",cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    @OneToOne(mappedBy = "boss", cascade = CascadeType.PERSIST)
     private Company company;
 
     @PreRemove
@@ -37,11 +40,11 @@ public class Person {
         this.company = null;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -80,7 +83,6 @@ public class Person {
         return "Person{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-//                ", company=" + company +
                 '}';
     }
 }
