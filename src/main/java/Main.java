@@ -19,8 +19,8 @@ public class Main {
         Person eaLead = new Person("Martin");
 
         //Create company
-        Company ubisoft = new Company("Ubisoft", 1000, 5000000);
-        Company ea = new Company("EA", 2300, 80000000);
+        Company ubisoft = new Company("Ubisoft", 1000, 5000000L);
+        Company ea = new Company("EA", 2300, 80000000L);
 
 
         //Create game
@@ -237,7 +237,7 @@ public class Main {
 
         System.out.println("/-----------------------------------------------------/");
         System.out.println("Проверяем зависимости между игрой и жанром");
-        ubisoft = new Company("Ubisoft", 1000, 5000000);
+        ubisoft = new Company("Ubisoft", 1000, 5000000L);
         companyRepository.add(ubisoft);
         assassins = new Game("AssassinsCreed", ubisoft);
         gameRepository.add(assassins);

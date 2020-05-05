@@ -7,7 +7,7 @@ public interface DAO<T> {
 
     public void update(T t);
 
-    public T getById(int id);
+    public T getById(Long id);
 
     public List<T> getAll();
 

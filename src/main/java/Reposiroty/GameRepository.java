@@ -44,7 +44,7 @@ public class GameRepository implements DAO<Game> {
     }
 
     @Override
-    public Game getById(int id) {
+    public Game getById(Long id) {
         return HibernateConnection.getSessionFactory().openSession().get(Game.class, id);
     }
 

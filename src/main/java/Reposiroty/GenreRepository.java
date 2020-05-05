@@ -52,7 +52,7 @@ public class GenreRepository implements DAO<Genre> {
     }
 
     @Override
-    public Genre getById(int id) {
+    public Genre getById(Long id) {
         return HibernateConnection.getSessionFactory().openSession().get(Genre.class, id);
     }
 

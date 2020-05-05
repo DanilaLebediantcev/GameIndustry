@@ -31,7 +31,7 @@ public class PersonRepository implements DAO<Person> {
     }
 
     @Override
-    public Person getById(int id) {
+    public Person getById(Long id) {
         return HibernateConnection.getSessionFactory().openSession().get(Person.class, id);
     }
 
