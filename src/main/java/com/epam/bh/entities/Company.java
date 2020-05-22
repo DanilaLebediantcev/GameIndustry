@@ -16,6 +16,11 @@ import java.util.List;
 @EqualsAndHashCode(of = {"id","name","numberOfEmployees","profit"})
 @ToString(of = {"id","name","numberOfEmployees","profit"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Company.class)
+@NamedQueries({
+        @NamedQuery(name = "Company.getByName",query = "SELECT g FROM Company g WHERE g.name = :name"),
+        @NamedQuery(name = "Company.getById",query = "SELECT g FROM Company g WHERE g.id = :id"),
+        @NamedQuery(name = "Company.getAll",query = "SELECT g FROM Company g")
+})
 public class Company implements Serializable {
 
     @Id

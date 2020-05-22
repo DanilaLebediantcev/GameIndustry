@@ -42,7 +42,6 @@ public class GameController {
 
     @GetMapping(value = "/delete/{id}")
     public String deleteGame(@PathVariable(name = "id") Long id) {
-        //System.out.println("----- deleted country from country controller: " + company);
         Game deleteGame = gameServiceDAO.getById(id);
         gameServiceDAO.delete(id);
         return deleteGame.toString() + ". This game was deleted. Pls, navigate to /games/getAll";

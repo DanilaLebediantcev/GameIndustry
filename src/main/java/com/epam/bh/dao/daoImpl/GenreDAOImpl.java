@@ -29,13 +29,6 @@ public class GenreDAOImpl implements DAO<Genre> {
         } finally {
             entityManager.close();
         }
-
-//        Session session = HibernateConnection.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.save(genre);
-//        transaction.commit();
-//        session.close();
-
     }
 
     @Override
@@ -52,12 +45,6 @@ public class GenreDAOImpl implements DAO<Genre> {
         } finally {
             entityManager.close();
         }
-
-//        Session session = HibernateConnection.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.update(genre);
-//        transaction.commit();
-//        session.close();
     }
 
     @Override
@@ -69,9 +56,8 @@ public class GenreDAOImpl implements DAO<Genre> {
             for (Game game : genre.getGameList()) {
                 game.getGenreList().remove(genre);
                 genre.getGameList().remove(game);
-                entityManager.merge(genre);
                 entityManager.merge(game);
-                entityManager.getTransaction().commit();
+                entityManager.merge(genre);
             }
             entityManager.remove(genre);
             entityManager.getTransaction().commit();
@@ -82,25 +68,6 @@ public class GenreDAOImpl implements DAO<Genre> {
         } finally {
             entityManager.close();
         }
-
-//        Session session = HibernateConnection.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        for (Game game : genre.getGameList()) {
-//            game.getGenreList().remove(genre);
-//            game.getGenreList();
-//            genre.getGameList().remove(game);
-//            genre.getGameList();
-//            session.update(genre);
-//            session.update(game);
-//        }
-//        transaction.commit();
-//        session.close();
-//
-//        session = HibernateConnection.getSessionFactory().openSession();
-//        transaction = session.beginTransaction();
-//        session.delete(genre);
-//        transaction.commit();
-//        session.close();
     }
 
     @Override
@@ -110,7 +77,7 @@ public class GenreDAOImpl implements DAO<Genre> {
         Genre getGenre = null;
         try {
             getGenre = entityManager.createNamedQuery("Genre.getById",Genre.class).setParameter("id",id).getSingleResult();
-            //getGame = entityManager.createQuery("select c from Company c where c.id =:id", Game.class).setParameter("id",id).getSingleResult();
+
         }
         catch (Exception exception) {
             exception.printStackTrace();
@@ -118,7 +85,6 @@ public class GenreDAOImpl implements DAO<Genre> {
             entityManager.close();
         }
         return getGenre;
-        //return HibernateConnection.getSessionFactory().openSession().get(Genre.class, id);
     }
 
     @Override
@@ -128,7 +94,6 @@ public class GenreDAOImpl implements DAO<Genre> {
         List<Genre> getAllGenres= null;
         try {
             getAllGenres = entityManager.createNamedQuery("Genre.getAll", Genre.class).getResultList();
-            //getAllGames = entityManager.createQuery("from Company", Company.class).getResultList();
         }
         catch (Exception exception) {
             exception.printStackTrace();
@@ -136,7 +101,5 @@ public class GenreDAOImpl implements DAO<Genre> {
             entityManager.close();
         }
         return getAllGenres;
-//        List<Genre> genreList = HibernateConnection.getSessionFactory().openSession().createQuery("FROM Genre ").list();
-//        return genreList;
     }
 }

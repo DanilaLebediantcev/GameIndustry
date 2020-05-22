@@ -1,10 +1,7 @@
 package ControllerTests;
 
 import CompanyServiceImplTest.TestBaseConfig;
-import com.epam.bh.controllers.GameController;
 import com.epam.bh.controllers.PersonController;
-import com.epam.bh.entities.Company;
-import com.epam.bh.entities.Game;
 import com.epam.bh.entities.Person;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;

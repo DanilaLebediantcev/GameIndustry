@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "GAME")
 @NamedQueries({
-        @NamedQuery(name = "Game.getByName",query = "SELECT g FROM Genre g WHERE g.name = :name"),
+        @NamedQuery(name = "Game.getByName",query = "SELECT g FROM Game g WHERE g.name = :name"),
         @NamedQuery(name = "Game.getById",query = "SELECT g FROM Game g WHERE g.id = :id"),
         @NamedQuery(name = "Game.getAll",query = "SELECT g FROM Game g")
 })

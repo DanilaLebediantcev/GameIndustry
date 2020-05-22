@@ -24,11 +24,6 @@ public class GameDAOImpl implements DAO<Game> {
     @Transactional
     @Override
     public void add(Game game) {
-//        Session session = HibernateConnection.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.save(game);
-//        transaction.commit();
-//        session.close();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         try {
@@ -58,11 +53,6 @@ public class GameDAOImpl implements DAO<Game> {
         } finally {
             entityManager.close();
         }
-//        Session session = HibernateConnection.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.update(game);
-//        transaction.commit();
-//        session.close();
     }
 
     @Transactional
@@ -87,17 +77,6 @@ public class GameDAOImpl implements DAO<Game> {
         } finally {
             entityManager.close();
         }
-//        Session session = HibernateConnection.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        for (Genre genre : game.getGenreList()) {
-//            genre.getGameList().remove(game);
-//            game.getGenreList().remove(genre);
-//            session.update(game);
-//            session.update(genre);
-//        }
-//        session.delete(game);
-//        transaction.commit();
-//        session.close();
     }
 
     @Transactional
@@ -108,7 +87,6 @@ public class GameDAOImpl implements DAO<Game> {
         Game getGame = null;
         try {
             getGame = entityManager.createNamedQuery("Game.getById",Game.class).setParameter("id",id).getSingleResult();
-            //getGame = entityManager.createQuery("select c from Company c where c.id =:id", Game.class).setParameter("id",id).getSingleResult();
         }
         catch (Exception exception) {
             exception.printStackTrace();
@@ -126,7 +104,6 @@ public class GameDAOImpl implements DAO<Game> {
         List<Game> getAllGames = null;
         try {
             getAllGames = entityManager.createNamedQuery("Game.getAll", Game.class).getResultList();
-            //getAllGames = entityManager.createQuery("from Company", Company.class).getResultList();
         }
         catch (Exception exception) {
             exception.printStackTrace();
@@ -134,20 +111,5 @@ public class GameDAOImpl implements DAO<Game> {
             entityManager.close();
         }
         return getAllGames;
-
-//        List<Game> gameList = HibernateConnection.getSessionFactory().openSession().createQuery("FROM Game").list();
-//        return gameList;
     }
-
-//    @Override
-//    public void addGameToCompanyGamesList(Game game) {
-//        Session session = HibernateConnection.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        Company company = game.getCompany();
-//        company.addGameToGamesList(game);
-//        session.update(company);
-//        transaction.commit();
-//        session.close();
-//
-//    }
 }

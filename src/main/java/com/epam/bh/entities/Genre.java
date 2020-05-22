@@ -9,13 +9,11 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "GENRE")@NamedQueries({
-        @NamedQuery(name = "Genre.getByName",query = "SELECT g FROM Game g WHERE g.name = :name"),
+        @NamedQuery(name = "Genre.getByName",query = "SELECT g FROM Genre g WHERE g.name = :name"),
         @NamedQuery(name = "Genre.getById",query = "SELECT g FROM Genre g WHERE g.id = :id"),
         @NamedQuery(name = "Genre.getAll",query = "SELECT g FROM Genre g")
 })

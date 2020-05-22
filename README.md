@@ -17,5 +17,9 @@
  ![alt text](GameIndustry_DATABASE_SCHEMA.png)
 
 
-#UnitTests: #
-UnitTest разработаны для проверки каждой операции по каждой отдельно взятой сущности, а также по всем заявленным связям.
+#Spring Core part: #
+Конфигурация для DB находится в application.properties
+
+Реализованы:
+entity,DAO,service,controller слои
+Для контроллеров написаны тесты
