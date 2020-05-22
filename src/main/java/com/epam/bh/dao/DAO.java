@@ -1,4 +1,4 @@
-package dao;
+package com.epam.bh.dao;
 
 import java.util.List;
 
@@ -7,9 +7,10 @@ public interface DAO<T> {
 
     public void update(T t);
 
-    public T getById(Long id);
+    public void deleteById(long id);
+
+    public T getById(long id);
 
     public List<T> getAll();
 
-    public void delete(T t);
 }

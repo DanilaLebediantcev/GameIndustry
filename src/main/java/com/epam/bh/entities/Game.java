@@ -1,9 +1,14 @@
-package entity;
+package com.epam.bh.entities;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "GAME")
@@ -12,6 +17,8 @@ import java.util.Set;
         @NamedQuery(name = "Game.getById",query = "SELECT g FROM Game g WHERE g.id = :id"),
         @NamedQuery(name = "Game.getAll",query = "SELECT g FROM Game g")
 })
+@EqualsAndHashCode(of = {"id","name"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Game.class)
 public class Game {
 
     public Game() {
@@ -23,52 +30,28 @@ public class Game {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id")
+    @Getter
+    @Setter
     private Long id;
 
+    @Getter
+    @Setter
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "fk_company")
     private Company company;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Getter
+    @Setter
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "GAME_GENRE", joinColumns = @JoinColumn(name = "game_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private Set<Genre> genreList = new HashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public Set<Genre> getGenreList() {
-        return genreList;
-    }
-
-    public void setGenreList(Set<Genre> genreList) {
-        this.genreList = genreList;
-    }
+    private List<Genre> genreList = new ArrayList<>();
 
     public void addGenreToGame(Genre genre) {
         genreList.add(genre);
@@ -78,20 +61,6 @@ public class Game {
     public void deleteGenreFromGame(Genre genre) {
         genreList.remove(genre);
         genre.getGameList().remove(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Game game = (Game) o;
-        return id == game.id &&
-                name.equals(game.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
     }
 
     @Override
