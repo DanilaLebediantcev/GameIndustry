@@ -1,11 +1,14 @@
 package com.epam.bh.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +18,7 @@ import java.util.List;
 @Entity
 @EqualsAndHashCode(of = {"id","name","numberOfEmployees","profit"})
 @ToString(of = {"id","name","numberOfEmployees","profit"})
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Company.class)
 @NamedQueries({
         @NamedQuery(name = "Company.getByName",query = "SELECT g FROM Company g WHERE g.name = :name"),
@@ -32,7 +36,7 @@ public class Company implements Serializable {
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "company_name", nullable = false, unique = true)
     private String name;
 
     @Getter
@@ -49,14 +53,14 @@ public class Company implements Serializable {
     @Setter
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "boss_id")
+    @JsonIgnoreProperties("company")
     private Person boss;
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnoreProperties("company")
     private List<Game> gamesList = new ArrayList<>();
-
-    public Company() {
-    }
 
 }

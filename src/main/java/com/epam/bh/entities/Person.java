@@ -1,6 +1,7 @@
 package com.epam.bh.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,23 +20,21 @@ import javax.persistence.*;
 })
 @EqualsAndHashCode(of = {"id","name"})
 @ToString(of = {"id","name"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Genre.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Person.class)
 public class Person {
     public Person() {
     }
 
-    public Person(String name) {
-        this.name = name;
-    }
+
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "person_id")
     @Getter
     @Setter
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "person_name")
     @Getter
     @Setter
     private String name;
@@ -43,6 +42,7 @@ public class Person {
     @OneToOne(mappedBy = "boss", cascade = CascadeType.PERSIST)
     @Getter
     @Setter
+    @JsonIgnoreProperties("boss")
     private Company company;
 
     @PreRemove

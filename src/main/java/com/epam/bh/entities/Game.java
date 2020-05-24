@@ -1,10 +1,13 @@
 package com.epam.bh.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,11 +27,6 @@ public class Game {
     public Game() {
     }
 
-    public Game(String name, Company company) {
-        this.name = name;
-        this.company = company;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id")
@@ -38,19 +36,23 @@ public class Game {
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "game_name", nullable = false, unique = true)
     private String name;
 
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "fk_company")
+    @JsonIgnoreProperties("gamesList")
+
     private Company company;
 
     @Getter
     @Setter
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "GAME_GENRE", joinColumns = @JoinColumn(name = "game_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    @JsonIgnoreProperties({"gameList"})
     private List<Genre> genreList = new ArrayList<>();
 
     public void addGenreToGame(Genre genre) {

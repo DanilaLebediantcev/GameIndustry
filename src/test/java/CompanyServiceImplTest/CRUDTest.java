@@ -26,7 +26,7 @@ public class CRUDTest {
     private EntityManagerFactory entityManagerFactory;
 
     @Test
-    void initIt() {
+    void addAllEntitiesWhenWeExecutePersistMethodForOnlyOneEntity() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         Company ubisoft = new Company();
@@ -41,7 +41,7 @@ public class CRUDTest {
 
         Person ubisoftLead = new Person();
         ubisoftLead.setName("Ubisoft Lead");
-        ubisoftLead.setCompany(ubisoft);
+        ubisoft.setBoss(ubisoftLead);
 
         Genre rpg = new Genre();
         rpg.setName("RPG");
@@ -58,7 +58,7 @@ public class CRUDTest {
         entityManager.persist(assassinCreed);
         entityManager.persist(rainbowSixSiege);
         entityManager.getTransaction().commit();
-
+        entityManager.close();
 
     }
 }

@@ -1,5 +1,6 @@
 package CompanyServiceImplTest;
 
+import com.epam.bh.converter.Converter;
 import com.epam.bh.dao.DAO;
 import com.epam.bh.dao.daoImpl.CompanyDAOImpl;
 import com.epam.bh.dao.daoImpl.GameDAOImpl;
@@ -71,6 +72,10 @@ public class TestBaseConfig {
         return new PersonServiceImpl(personDAO);
     }
 
+    @Bean
+    public Converter getConverter(){
+        return new Converter();
+    }
 
 
     @Bean("entityManagerFactory")

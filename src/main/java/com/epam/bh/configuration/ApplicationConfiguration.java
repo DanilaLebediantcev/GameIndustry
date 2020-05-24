@@ -1,5 +1,6 @@
 package com.epam.bh.configuration;
 
+import com.epam.bh.converter.Converter;
 import com.epam.bh.dao.DAO;
 import com.epam.bh.dao.daoImpl.CompanyDAOImpl;
 import com.epam.bh.dao.daoImpl.GameDAOImpl;
@@ -66,6 +67,11 @@ public class ApplicationConfiguration {
     @Bean
     public ServiceDAO<Person> personServiceDAO(DAO<Person> personDAO) {
         return new PersonServiceImpl(personDAO);
+    }
+
+    @Bean
+    public Converter getConverter(){
+        return new Converter();
     }
 
 }
