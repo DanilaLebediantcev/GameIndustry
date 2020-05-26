@@ -13,8 +13,7 @@ import java.util.logging.Logger;
 public class GameServiceImpl implements ServiceDAO<Game> {
 
     private static final Logger log = Logger.getLogger(CompanyServiceImpl.class.getName());
-    
-    @Autowired
+
     private DAO<Game> gameDAO;
 
     public GameServiceImpl(DAO<Game> gameDAO) {

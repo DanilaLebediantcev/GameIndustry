@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes =  {TestBaseConfig.class, PersonController.class})
 @WebAppConfiguration
 @EnableWebMvc
-@TestPropertySource("classpath:application.properties")
+@TestPropertySource("classpath:test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PersonControllerTest {
     private MockMvc mockMvc;
@@ -81,9 +81,9 @@ public class PersonControllerTest {
 
     }
 
-    @SneakyThrows
+    
     @Test
-    public void addPerson() {
+    public void addPerson() throws Exception {
         Person personTestAddControllerMethod = new Person();
         personTestAddControllerMethod.setName("PersonControllerTestMethodAdd");
         mockMvc.perform(MockMvcRequestBuilders.post("/persons/add").
@@ -91,31 +91,31 @@ public class PersonControllerTest {
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void getPersonById(){
+    public void getPersonById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/persons/getById/{id}",1).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk()).
                 andExpect(jsonPath("$.id").value("1"));
     }
 
-    @SneakyThrows
+    
     @Test
-    public void getAllPersons(){
+    public void getAllPersons() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/persons/getAll").
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void deletePerson() {
+    public void deletePerson() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/persons/delete/{id}", 2).
                 content(asJsonString(personTest2)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void updatePerson() {
+    public void updatePerson() throws Exception {
         personTest3.setName(personTest3.getName()+"_UPDATE");
         mockMvc.perform(MockMvcRequestBuilders.post("/persons/update").
                 content(asJsonString(personTest3)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());

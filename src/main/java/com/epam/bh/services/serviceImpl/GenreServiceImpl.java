@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 public class GenreServiceImpl implements ServiceDAO<Genre> {
     private static final Logger log = Logger.getLogger(CompanyServiceImpl.class.getName());
 
-    @Autowired
     private DAO<Genre> genreDAO;
 
     public GenreServiceImpl(DAO<Genre> genreDAO) {

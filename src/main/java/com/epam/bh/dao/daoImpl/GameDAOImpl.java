@@ -4,8 +4,6 @@ import com.epam.bh.dao.DAO;
 import com.epam.bh.entities.Game;
 import com.epam.bh.entities.Genre;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
@@ -21,7 +19,6 @@ public class GameDAOImpl implements DAO<Game> {
         this.entityManagerFactory = entityManagerFactory;
     }
 
-    @Transactional
     @Override
     public void add(Game game) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -38,7 +35,6 @@ public class GameDAOImpl implements DAO<Game> {
         }
     }
 
-    @Transactional
     @Override
     public void update(Game game) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -55,7 +51,7 @@ public class GameDAOImpl implements DAO<Game> {
         }
     }
 
-    @Transactional
+
     @Override
     public void deleteById(long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -79,7 +75,7 @@ public class GameDAOImpl implements DAO<Game> {
         }
     }
 
-    @Transactional
+
     @Override
     public Game getById(long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -96,7 +92,6 @@ public class GameDAOImpl implements DAO<Game> {
         return getGame;
     }
 
-    @Transactional
     @Override
     public List<Game> getAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();

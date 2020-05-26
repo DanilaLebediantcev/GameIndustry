@@ -3,6 +3,8 @@ package com.epam.bh.controllers;
 
 import com.epam.bh.entities.Company;
 import com.epam.bh.services.ServiceDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,7 @@ import java.util.List;
 public class CompanyController {
 
     private final ServiceDAO<Company> companyServiceDAO;
+    private Logger log = LoggerFactory.getLogger(CompanyController.class);
 
     public CompanyController(@Qualifier("companyServiceDAO") ServiceDAO<Company> companyServiceDAO) {
         this.companyServiceDAO = companyServiceDAO;
@@ -27,7 +30,7 @@ public class CompanyController {
     @PostMapping(path = "/add")
     public void addCompany(@RequestBody Company company) {
         companyServiceDAO.add(company);
-        System.out.println("----- !!!!!!  Added company from country controller: " + company.toString());
+        log.info("----- !!!!!!  Added company from country controller: " + company.toString());
     }
 
     @GetMapping(path = "/getById/{id}")
@@ -38,7 +41,7 @@ public class CompanyController {
     @PostMapping(path = "/update")
     public void updateCompany(@RequestBody Company company) {
         companyServiceDAO.update(company);
-        System.out.println("----- updated country from country controller: " + company);
+        log.info("----- updated country from country controller: " + company);
     }
 
     @GetMapping(value = "/delete/{id}")

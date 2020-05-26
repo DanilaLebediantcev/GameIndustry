@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 public class PersonServiceImpl implements ServiceDAO<Person> {
     private static final Logger log = Logger.getLogger(CompanyServiceImpl.class.getName());
 
-    @Autowired
     private DAO<Person> personDAO;
 
     public PersonServiceImpl(DAO<Person> personDAO) {

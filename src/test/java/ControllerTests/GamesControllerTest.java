@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes =  {TestBaseConfig.class, GameController.class})
 @WebAppConfiguration
 @EnableWebMvc
-@TestPropertySource("classpath:application.properties")
+@TestPropertySource("classpath:test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class GamesControllerTest {
     private MockMvc mockMvc;
@@ -91,9 +91,9 @@ public class GamesControllerTest {
 
     }
 
-    @SneakyThrows
+    
     @Test
-    public void addGame() {
+    public void addGame() throws Exception {
         Game gameTestAddControllerMethod = new Game();
         gameTestAddControllerMethod.setName("GameControllerTestMethodAdd");
         gameTestAddControllerMethod.setCompany(companyTest1);
@@ -102,32 +102,32 @@ public class GamesControllerTest {
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void getGameById(){
+    public void getGameById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/games/getById/{id}",1).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk()).
                 andExpect(jsonPath("$.id").value("1")).
                 andExpect(jsonPath("$.company.name").value("Company3FromCompanyControllerTest"));
     }
 
-    @SneakyThrows
+    
     @Test
-    public void getAllGames(){
+    public void getAllGames() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/games/getAll").
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void deleteGame() {
+    public void deleteGame() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/games/delete/{id}", 2).
                 content(asJsonString(gameTest2)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void updateGame() {
+    public void updateGame() throws Exception {
         gameTest3.setName(gameTest3.getName()+"_UPDATE");
         mockMvc.perform(MockMvcRequestBuilders.post("/games/update").
                 content(asJsonString(gameTest3)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());

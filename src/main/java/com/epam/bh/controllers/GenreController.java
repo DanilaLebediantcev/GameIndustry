@@ -2,6 +2,8 @@ package com.epam.bh.controllers;
 
 import com.epam.bh.entities.Genre;
 import com.epam.bh.services.ServiceDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +14,7 @@ import java.util.List;
 public class GenreController {
 
     private final ServiceDAO<Genre> genreServiceDAO;
+    private Logger log = LoggerFactory.getLogger(GenreController.class);
 
     public GenreController(@Qualifier("genreServiceDAO") ServiceDAO<Genre> genreServiceDAO) {
         this.genreServiceDAO = genreServiceDAO;
@@ -26,7 +29,7 @@ public class GenreController {
     @PostMapping(path = "/add")
     public void addGenre(@RequestBody Genre genre) {
         genreServiceDAO.add(genre);
-        System.out.println("----- added country from country controller: " + genre);
+        log.info("----- added country from country controller: " + genre);
     }
 
     @GetMapping(path = "/getById/{id}")
@@ -37,7 +40,7 @@ public class GenreController {
     @PostMapping(path = "/update")
     public void updateGenre(@RequestBody Genre genre) {
         genreServiceDAO.update(genre);
-        System.out.println("----- updated country from country controller: " + genre);
+        log.info("----- updated country from country controller: " + genre);
     }
 
     @GetMapping(value = "/delete/{id}")

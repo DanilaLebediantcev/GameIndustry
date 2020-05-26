@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 public class CompanyServiceImpl implements ServiceDAO<Company> {
     private static final Logger log = Logger.getLogger(CompanyServiceImpl.class.getName());
 
-    @Autowired
     private DAO<Company> companyDAO;
 
     public CompanyServiceImpl(DAO<Company> companyDAO) {
@@ -43,7 +42,6 @@ public class CompanyServiceImpl implements ServiceDAO<Company> {
     }
 
     @Override
-    @Transactional
     public Company getById(long id) {
         Company company = this.companyDAO.getById(id);
         log.info("Company with id [" + id + "] details: " + company.toString());

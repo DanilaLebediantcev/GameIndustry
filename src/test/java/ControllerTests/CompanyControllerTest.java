@@ -30,7 +30,7 @@ import javax.persistence.EntityManagerFactory;
 @ContextConfiguration(classes =  {TestBaseConfig.class,CompanyController.class})
 @WebAppConfiguration
 @EnableWebMvc
-@TestPropertySource("classpath:application.properties")
+@TestPropertySource("classpath:test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CompanyControllerTest {
     private MockMvc mockMvc;
@@ -79,9 +79,9 @@ public class CompanyControllerTest {
         entityManagerFactory.close();
     }
 
-    @SneakyThrows
+    
     @Test
-    public void addCompany() {
+    public void addCompany() throws Exception {
         Company companyTestAddControllerMethod = new Company();
         companyTestAddControllerMethod.setName("CompanyControllerTestMethodAdd");
         mockMvc.perform(MockMvcRequestBuilders.post("/companies/add").
@@ -89,32 +89,32 @@ public class CompanyControllerTest {
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void getCompanyById(){
+    public void getCompanyById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/companies/getById/{id}",1).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk()).
                 andExpect(jsonPath("$.name").value("Company1FromCompanyControllerTest"));
     }
 
-    @SneakyThrows
+    
     @Test
-    public void getAllCompany(){
+    public void getAllCompany() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/companies/getAll").
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void deleteCompany() {
+    public void deleteCompany() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/companies/delete/{id}",2).
                 content(asJsonString(companyTest2)).contentType(MediaType.APPLICATION_JSON).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void updateCompany() {
+    public void updateCompany() throws Exception {
         companyTest1.setName(companyTest1.getName()+"_UPDATE");
         mockMvc.perform(MockMvcRequestBuilders.post("/companies/update").
                 content(asJsonString(companyTest1)).contentType(MediaType.APPLICATION_JSON).

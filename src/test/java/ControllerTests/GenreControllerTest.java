@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes =  {TestBaseConfig.class, GenreController.class})
 @WebAppConfiguration
 @EnableWebMvc
-@TestPropertySource("classpath:application.properties")
+@TestPropertySource("classpath:test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class GenreControllerTest {
     private MockMvc mockMvc;
@@ -81,9 +81,9 @@ public class GenreControllerTest {
 
     }
 
-    @SneakyThrows
+    
     @Test
-    public void addGame() {
+    public void addGame() throws Exception {
         Genre genreTestAddControllerMethod = new Genre();
         genreTestAddControllerMethod.setName("GenreControllerTestMethodAdd");
         mockMvc.perform(MockMvcRequestBuilders.post("/genres/add").
@@ -91,31 +91,31 @@ public class GenreControllerTest {
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void getGameById(){
+    public void getGameById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/genres/getById/{id}",1).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk()).
                 andExpect(jsonPath("$.id").value("1"));
     }
 
-    @SneakyThrows
+    
     @Test
-    public void getAllGames(){
+    public void getAllGames() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/genres/getAll").
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void deleteGame() {
+    public void deleteGame() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/genres/delete/{id}", 2).
                 content(asJsonString(genreTest2)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+    
     @Test
-    public void updateGame() {
+    public void updateGame() throws Exception {
         genreTest3.setName(genreTest3.getName()+"_UPDATE");
         mockMvc.perform(MockMvcRequestBuilders.post("/genres/update").
                 content(asJsonString(genreTest3)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());

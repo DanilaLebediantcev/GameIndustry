@@ -2,7 +2,6 @@ package com.epam.bh.dao.daoImpl;
 
 import com.epam.bh.dao.DAO;
 import com.epam.bh.entities.Company;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -19,7 +18,6 @@ public class CompanyDAOImpl implements DAO<Company> {
         this.entityManagerFactory = entityManagerFactory;
     }
 
-    @Transactional
     @Override
     public void add(Company company) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -37,7 +35,6 @@ public class CompanyDAOImpl implements DAO<Company> {
 
     }
 
-    @Transactional
     @Override
     public void update(Company company) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -53,17 +50,9 @@ public class CompanyDAOImpl implements DAO<Company> {
             entityManager.close();
         }
 
-
-//
-//        Session session = HibernateConnection.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.update(company);
-//        transaction.commit();
-//        session.close();
-
     }
 
-    @Transactional
+
     @Override
     public void deleteById(long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -80,16 +69,8 @@ public class CompanyDAOImpl implements DAO<Company> {
             entityManager.close();
         }
 
-
-//        Session session = HibernateConnection.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.delete(company);
-//        transaction.commit();
-//        session.close();
     }
 
-
-    @Transactional
     @Override
     public Company getById(long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -104,13 +85,7 @@ public class CompanyDAOImpl implements DAO<Company> {
             entityManager.close();
         }
         return getCompany;
-//        EntityManager entityManager = entityManagerFactory.createEntityManager();
-//        Company getCompany = entityManager.createQuery("select c from Company c where c.id =:id",Company.class).setParameter("id",1).getSingleResult();
-//        entityManager.close();
-//        return getCompany;
     }
-
-    @Transactional
     @Override
     public List<Company> getAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -125,10 +100,5 @@ public class CompanyDAOImpl implements DAO<Company> {
             entityManager.close();
         }
         return getAllCompanies;
-
-//        EntityManager entityManager = entityManagerFactory.createEntityManager();
-//        List<Company> companyList = entityManager.createQuery("from Company",Company.class).getResultList();
-//        entityManager.close();
-//        return companyList;
     }
 }

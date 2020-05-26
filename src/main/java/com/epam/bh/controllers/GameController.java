@@ -1,5 +1,7 @@
 package com.epam.bh.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.epam.bh.entities.Game;
 import com.epam.bh.services.ServiceDAO;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,6 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/games")
 public class GameController {
+
+    private Logger log = LoggerFactory.getLogger(GameController.class);
 
     private final ServiceDAO<Game> gameServiceDAO;
 
@@ -26,7 +30,7 @@ public class GameController {
     @PostMapping(path = "/add")
     public void addGame(@RequestBody Game game) {
         gameServiceDAO.add(game);
-        System.out.println("----- added country from country controller: " + game);
+        log.info("----- added country from country controller: " + game);
     }
 
     @GetMapping(path = "/getById/{id}")
@@ -37,7 +41,7 @@ public class GameController {
     @PostMapping(path = "/update")
     public void updateGame(@RequestBody Game game) {
         gameServiceDAO.update(game);
-        System.out.println("----- updated country from country controller: " + game);
+        log.info("----- updated country from country controller: " + game);
     }
 
     @GetMapping(value = "/delete/{id}")
