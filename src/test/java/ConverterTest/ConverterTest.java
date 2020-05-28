@@ -40,7 +40,7 @@ public class ConverterTest {
     @Test
     public void TestParse() throws JSONException {
 
-        List<Game> games = getConverter.readObjectsFromJsonFile("D:\\EPAM_project\\GameIndustry\\src\\test\\java\\ConverterTest\\JsonFileForRead.json", Game.class);
+        List<Game> games = getConverter.readObjectsFromJsonFile(".\\src\\test\\java\\ConverterTest\\JsonFileForRead.json", Game.class);
 
 
         entityManager = entityManagerFactory.createEntityManager();
@@ -57,10 +57,10 @@ public class ConverterTest {
         List<Game> gameList = List.of(game1,game2);
         entityManager.close();
 
-        getConverter.writeObjectsToJsonFile(gameList,"D:\\EPAM_project\\GameIndustry\\src\\test\\java\\ConverterTest\\OutputFileWithGames.json");
+        getConverter.writeObjectsToJsonFile(gameList,".\\src\\test\\java\\ConverterTest\\OutputFileWithGames.json");
 
         List<Company> companyList = companyServiceDAO.getAll();
-        getConverter.writeObjectsToJsonFile(companyList,"D:\\EPAM_project\\GameIndustry\\src\\test\\java\\ConverterTest\\OutputFileWithCompanies.json");
+        getConverter.writeObjectsToJsonFile(companyList,".\\src\\test\\java\\ConverterTest\\OutputFileWithCompanies.json");
 
     }
 }
