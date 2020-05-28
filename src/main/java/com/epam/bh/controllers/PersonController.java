@@ -3,7 +3,8 @@ package com.epam.bh.controllers;
 
 import com.epam.bh.entities.Person;
 import com.epam.bh.services.ServiceDAO;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +15,9 @@ public class PersonController {
 
     private final ServiceDAO<Person> personServiceDAO;
 
-    public PersonController(@Qualifier("personServiceDAO") ServiceDAO<Person> personServiceDAO) {
+    private Logger log = LoggerFactory.getLogger(CompanyController.class);
+
+    public PersonController(ServiceDAO<Person> personServiceDAO) {
         this.personServiceDAO = personServiceDAO;
     }
 
@@ -26,24 +29,25 @@ public class PersonController {
 
     @PostMapping(path = "/add")
     public void addGenre(@RequestBody Person person) {
-        System.out.println("----- added country from country controller: " + person);
+        log.info("----- added person from person controller: " + person);
     }
 
     @GetMapping(path = "/getById/{id}")
     public Person findGenreById(@PathVariable(name = "id") Long id) {
-        return personServiceDAO.getById(id);
+        Person findByIdPerson = personServiceDAO.getById(id);
+        log.info("----- !!!!!! Genre found: " + findByIdPerson.toString());
+        return findByIdPerson;
     }
 
-    @PostMapping(path = "/update")
+    @PutMapping(path = "/update")
     public void updateGenre(@RequestBody Person person) {
         personServiceDAO.update(person);
-        System.out.println("----- updated country from country controller: " + person);
+        log.info("----- updated person from person controller: " + person);
     }
 
-    @GetMapping(value = "/delete/{id}")
-    public String deleteGenre(@PathVariable(name = "id") Long id) {
-        Person deleteGenre = personServiceDAO.getById(id);
+    @DeleteMapping(value = "/delete/{id}")
+    public void deleteGenre(@PathVariable(name = "id") Long id) {
         personServiceDAO.delete(id);
-        return deleteGenre.toString() + ". This person was deleted. Pls, navigate to /persons/getAll";
+        log.info("----- Person with id [" + id + "] was deleted. Pls, navigate to /persons/getAll");
     }
 }

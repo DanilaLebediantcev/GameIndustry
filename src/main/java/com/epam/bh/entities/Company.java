@@ -11,21 +11,34 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @EqualsAndHashCode(of = {"id","name","numberOfEmployees","profit"})
 @ToString(of = {"id","name","numberOfEmployees","profit"})
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Company.class)
 @NamedQueries({
         @NamedQuery(name = "Company.getByName",query = "SELECT g FROM Company g WHERE g.name = :name"),
         @NamedQuery(name = "Company.getById",query = "SELECT g FROM Company g WHERE g.id = :id"),
         @NamedQuery(name = "Company.getAll",query = "SELECT g FROM Company g")
 })
-public class Company implements Serializable {
+public class Company {
+    public Company() {
+    }
+
+    public Company(Long id, String name, int numberOfEmployees, Long profit) {
+        this.id = id;
+        this.name = name;
+        this.numberOfEmployees = numberOfEmployees;
+        this.profit = profit;
+    }
+    public Company(String name, int numberOfEmployees, Long profit) {
+        this.name = name;
+        this.numberOfEmployees = numberOfEmployees;
+        this.profit = profit;
+    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,7 +3,8 @@ package com.epam.bh.controllers;
 
 import com.epam.bh.entities.Company;
 import com.epam.bh.services.ServiceDAO;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,8 +14,9 @@ import java.util.List;
 public class CompanyController {
 
     private final ServiceDAO<Company> companyServiceDAO;
+    private Logger log = LoggerFactory.getLogger(CompanyController.class);
 
-    public CompanyController(@Qualifier("companyServiceDAO") ServiceDAO<Company> companyServiceDAO) {
+    public CompanyController(ServiceDAO<Company> companyServiceDAO) {
         this.companyServiceDAO = companyServiceDAO;
     }
 
@@ -27,24 +29,25 @@ public class CompanyController {
     @PostMapping(path = "/add")
     public void addCompany(@RequestBody Company company) {
         companyServiceDAO.add(company);
-        System.out.println("----- !!!!!!  Added company from country controller: " + company.toString());
+        log.info("----- !!!!!!  Added company from company controller: " + company.toString());
     }
 
     @GetMapping(path = "/getById/{id}")
     public Company findCompanyById(@PathVariable(name = "id") Long id) {
-        return companyServiceDAO.getById(id);
+       Company findByIdCompany = companyServiceDAO.getById(id);
+       log.info("----- !!!!!! Company found: " + findByIdCompany.toString());
+       return findByIdCompany;
     }
 
-    @PostMapping(path = "/update")
+    @PutMapping(path = "/update")
     public void updateCompany(@RequestBody Company company) {
         companyServiceDAO.update(company);
-        System.out.println("----- updated country from country controller: " + company);
+        log.info("----- updated company from company controller: " + company);
     }
 
-    @GetMapping(value = "/delete/{id}")
-    public String deleteCompany(@PathVariable(name = "id") Long id) {
-        Company deleteCompany = companyServiceDAO.getById(id);
+    @DeleteMapping(value = "/delete/{id}")
+    public void deleteCompany(@PathVariable(name = "id") Long id) {
         companyServiceDAO.delete(id);
-        return deleteCompany.toString() + ". This company was deleted. Pls, navigate to /companies/getAll";
+        log.info("----- Company with id ["+id +"] was deleted. Pls, navigate to /companies/getAll");
     }
 }

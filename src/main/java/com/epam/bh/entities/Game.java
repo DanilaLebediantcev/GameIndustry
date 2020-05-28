@@ -27,6 +27,13 @@ public class Game {
     public Game() {
     }
 
+    public Game(Long id, String name, Company company) {
+        this.id = id;
+        this.name = name;
+        this.company = company;
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id")

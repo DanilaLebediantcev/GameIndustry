@@ -1,46 +1,42 @@
 package ControllerTests;
 
-import CompanyServiceImplTest.TestBaseConfig;
-import com.epam.bh.controllers.CompanyController;
 import com.epam.bh.entities.Company;
+import com.epam.bh.services.serviceImpl.CompanyServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import javax.persistence.EntityManager;
+import java.util.List;
 
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import javax.persistence.EntityManagerFactory;
-
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes =  {TestBaseConfig.class,CompanyController.class})
-@WebAppConfiguration
-@EnableWebMvc
-@TestPropertySource("classpath:application.properties")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = com.epam.bh.SpringCoreApplication.class)
+@AutoConfigureMockMvc
 public class CompanyControllerTest {
-    private MockMvc mockMvc;
-    @Autowired
-    private EntityManager entityManager;
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    CompanyServiceImpl companyService;
+
+    Company companyTest1 = new Company(1L, "Ubisoft", 1000, 800000L);
+    Company companyTest2 = new Company(2L, "EA", 500, 654000L);
+    Company companyTest3 = new Company(3L, "Blizzard", 4000, 46545400L);
 
     public static String asJsonString(final Object obj) {
         try {
@@ -50,75 +46,51 @@ public class CompanyControllerTest {
         }
     }
 
-    static Company companyTest1 = new Company();
-    static Company companyTest2 = new Company();
 
-    static {
-        companyTest1.setName("Company1FromCompanyControllerTest");
-        companyTest1.setNumberOfEmployees(1000);
-        companyTest1.setProfit(60000000L);
-
-        companyTest2.setName("Company2FromCompanyControllerTest");
-        companyTest2.setNumberOfEmployees(6000);
-        companyTest2.setProfit(10000L);
-    }
-
-
-    @BeforeAll
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        entityManager.getTransaction().begin();
-        entityManager.persist(companyTest1);
-        entityManager.persist(companyTest2);
-        entityManager.getTransaction().commit();
-    }
-
-    @AfterAll
-    public void endTest(){
-        entityManager.close();
-        entityManagerFactory.close();
-    }
-
-    @SneakyThrows
     @Test
-    public void addCompany() {
-        Company companyTestAddControllerMethod = new Company();
-        companyTestAddControllerMethod.setName("CompanyControllerTestMethodAdd");
+    public void addCompany() throws Exception {
+        when(companyService.add(any(Company.class))).thenReturn(companyTest1);
+
         mockMvc.perform(MockMvcRequestBuilders.post("/companies/add").
-                content(asJsonString(companyTestAddControllerMethod)).contentType(MediaType.APPLICATION_JSON).
+                content(asJsonString(companyTest1)).contentType(MediaType.APPLICATION_JSON).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+
     @Test
-    public void getCompanyById(){
-        mockMvc.perform(MockMvcRequestBuilders.get("/companies/getById/{id}",1).
+    public void getCompanyById() throws Exception {
+        when(companyService.getById(anyLong())).thenReturn(companyTest1);
+        mockMvc.perform(MockMvcRequestBuilders.get("/companies/getById/{id}", 1).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk()).
-                andExpect(jsonPath("$.name").value("Company1FromCompanyControllerTest"));
+                andExpect(jsonPath("$.id").value("1")).
+                andExpect(jsonPath("$.name").value("Ubisoft"));
     }
 
-    @SneakyThrows
+
     @Test
-    public void getAllCompany(){
+    public void getAllCompanies() throws Exception {
+        List<Company> companyList = List.of(companyTest1, companyTest2, companyTest3);
+        when(companyService.getAll()).thenReturn(companyList);
         mockMvc.perform(MockMvcRequestBuilders.get("/companies/getAll").
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+
     @Test
-    public void deleteCompany() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/companies/delete/{id}",2).
-                content(asJsonString(companyTest2)).contentType(MediaType.APPLICATION_JSON).
-                accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
+    public void deleteCompany() throws Exception {
+        doNothing().when(companyService).delete(anyLong());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/companies/delete/{id}", 1).
+                content(asJsonString(companyTest1)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+
     @Test
-    public void updateCompany() {
-        companyTest1.setName(companyTest1.getName()+"_UPDATE");
-        mockMvc.perform(MockMvcRequestBuilders.post("/companies/update").
-                content(asJsonString(companyTest1)).contentType(MediaType.APPLICATION_JSON).
-                accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
+    public void updateCompany() throws Exception {
+        when(companyService.update(any(Company.class))).thenReturn(true);
+        companyTest1.setName(companyTest1.getName() + "_UPDATE");
+        mockMvc.perform(MockMvcRequestBuilders.put("/companies/update").
+                content(asJsonString(companyTest1)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
+
     }
 
 

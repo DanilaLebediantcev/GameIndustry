@@ -1,51 +1,50 @@
 package ControllerTests;
 
-import CompanyServiceImplTest.TestBaseConfig;
-import com.epam.bh.controllers.GameController;
 import com.epam.bh.entities.Company;
 import com.epam.bh.entities.Game;
+import com.epam.bh.services.serviceImpl.GameServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes =  {TestBaseConfig.class, GameController.class})
-@WebAppConfiguration
-@EnableWebMvc
-@TestPropertySource("classpath:application.properties")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = com.epam.bh.SpringCoreApplication.class)
+@AutoConfigureMockMvc
 public class GamesControllerTest {
+
+    @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private EntityManager entityManager;
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+
+    @MockBean
+    GameServiceImpl gameService;
+
+    Company companyTest1 = new Company(1L, "Ubisoft", 1000, 800000L);
+
+
+    Game gameTest1 = new Game(1L,"Assassins Creed",companyTest1);
+    Game gameTest2 = new Game(2L,"Rainbow Six Siege",companyTest1);
+    Game gameTest3 = new Game(3L,"Anno 2025",companyTest1);
+
 
     public static String asJsonString(final Object obj) {
         try {
@@ -55,82 +54,47 @@ public class GamesControllerTest {
         }
     }
 
-    static Company companyTest1 = new Company();
-    static Game gameTest1 = new Game();
-    static Game gameTest2 = new Game();
-    static Game gameTest3 = new Game();
-
-    static {
-        companyTest1.setName("Company3FromCompanyControllerTest");
-        companyTest1.setNumberOfEmployees(1000);
-        companyTest1.setProfit(60000000L);
-
-        gameTest1.setName("GameTest1");
-        gameTest1.setCompany(companyTest1);
-        gameTest2.setName("GameTest2");
-        gameTest2.setCompany(companyTest1);
-        gameTest3.setName("GameTest3");
-        gameTest3.setCompany(companyTest1);
-    }
-
-
-    @BeforeAll
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        entityManager.getTransaction().begin();
-        entityManager.persist(companyTest1);
-        entityManager.persist(gameTest1);
-        entityManager.persist(gameTest2);
-        entityManager.getTransaction().commit();
-    }
-
-    @AfterAll
-    public void endTest(){
-        entityManager.close();
-        entityManagerFactory.close();
-
-    }
-
-    @SneakyThrows
     @Test
-    public void addGame() {
-        Game gameTestAddControllerMethod = new Game();
-        gameTestAddControllerMethod.setName("GameControllerTestMethodAdd");
-        gameTestAddControllerMethod.setCompany(companyTest1);
+    public void addGame() throws Exception {
+        when(gameService.add(any(Game.class))).thenReturn(gameTest1);
         mockMvc.perform(MockMvcRequestBuilders.post("/games/add").
-                content(asJsonString(gameTestAddControllerMethod)).contentType(MediaType.APPLICATION_JSON).
+                content(asJsonString(gameTest1)).contentType(MediaType.APPLICATION_JSON).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+
     @Test
-    public void getGameById(){
+    public void getGameById() throws Exception {
+        when(gameService.getById(anyLong())).thenReturn(gameTest1);
         mockMvc.perform(MockMvcRequestBuilders.get("/games/getById/{id}",1).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk()).
                 andExpect(jsonPath("$.id").value("1")).
-                andExpect(jsonPath("$.company.name").value("Company3FromCompanyControllerTest"));
+                andExpect(jsonPath("$.company.name").value("Ubisoft"));
     }
 
-    @SneakyThrows
+
     @Test
-    public void getAllGames(){
+    public void getAllGames() throws Exception {
+        when(gameService.getAll()).thenReturn(List.of(gameTest1,gameTest2,gameTest3));
         mockMvc.perform(MockMvcRequestBuilders.get("/games/getAll").
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+
     @Test
-    public void deleteGame() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/games/delete/{id}", 2).
-                content(asJsonString(gameTest2)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
+    public void deleteGame() throws Exception {
+        doNothing().when(gameService).delete(anyLong());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/games/delete/{id}", 3).
+                content(asJsonString(gameTest3)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
+
     @Test
-    public void updateGame() {
-        gameTest3.setName(gameTest3.getName()+"_UPDATE");
-        mockMvc.perform(MockMvcRequestBuilders.post("/games/update").
-                content(asJsonString(gameTest3)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
+    public void updateGame() throws Exception {
+        when(gameService.update(any(Game.class))).thenReturn(true);
+        gameTest2.setName(gameTest2.getName()+"_UPDATE");
+        mockMvc.perform(MockMvcRequestBuilders.put("/games/update").
+                content(asJsonString(gameTest2)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
 
     }
 

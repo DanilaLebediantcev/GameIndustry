@@ -1,49 +1,40 @@
 package ControllerTests;
 
-import CompanyServiceImplTest.TestBaseConfig;
-import com.epam.bh.controllers.GenreController;
 import com.epam.bh.entities.Genre;
+import com.epam.bh.services.serviceImpl.GenreServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes =  {TestBaseConfig.class, GenreController.class})
-@WebAppConfiguration
-@EnableWebMvc
-@TestPropertySource("classpath:application.properties")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = com.epam.bh.SpringCoreApplication.class)
+@AutoConfigureMockMvc
 public class GenreControllerTest {
+
+    @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private EntityManager entityManager;
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+
+    @MockBean
+    GenreServiceImpl genreService;
 
     public static String asJsonString(final Object obj) {
         try {
@@ -53,71 +44,45 @@ public class GenreControllerTest {
         }
     }
 
-    static Genre genreTest1 = new Genre();
-    static Genre genreTest2 = new Genre();
-    static Genre genreTest3 = new Genre();
+    static Genre genreTest1 = new Genre(1L,"RPG");
+    static Genre genreTest2 = new Genre(2L,"FPP");
+    static Genre genreTest3 = new Genre(3L,"Horror");
 
-    static {
-        genreTest1.setName("GenreTest1");
-        genreTest2.setName("GenreTest2");
-        genreTest3.setName("GenreTest3");
-    }
-
-
-    @BeforeAll
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        entityManager.getTransaction().begin();
-        entityManager.persist(genreTest1);
-        entityManager.persist(genreTest2);
-        entityManager.persist(genreTest3);
-        entityManager.getTransaction().commit();
-    }
-
-    @AfterAll
-    public void endTest(){
-        entityManager.close();
-        entityManagerFactory.close();
-
-    }
-
-    @SneakyThrows
     @Test
-    public void addGame() {
-        Genre genreTestAddControllerMethod = new Genre();
-        genreTestAddControllerMethod.setName("GenreControllerTestMethodAdd");
+    public void addGame() throws Exception {
+        when(genreService.add(any(Genre.class))).thenReturn(genreTest1);
         mockMvc.perform(MockMvcRequestBuilders.post("/genres/add").
-                content(asJsonString(genreTestAddControllerMethod)).contentType(MediaType.APPLICATION_JSON).
+                content(asJsonString(genreTest1)).contentType(MediaType.APPLICATION_JSON).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
     @Test
-    public void getGameById(){
+    public void getGameById() throws Exception {
+        when(genreService.getById(anyLong())).thenReturn(genreTest1);
         mockMvc.perform(MockMvcRequestBuilders.get("/genres/getById/{id}",1).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk()).
                 andExpect(jsonPath("$.id").value("1"));
     }
 
-    @SneakyThrows
     @Test
-    public void getAllGames(){
+    public void getAllGames() throws Exception {
+        when(genreService.getAll()).thenReturn(List.of(genreTest1,genreTest2,genreTest3));
         mockMvc.perform(MockMvcRequestBuilders.get("/genres/getAll").
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
     @Test
-    public void deleteGame() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/genres/delete/{id}", 2).
-                content(asJsonString(genreTest2)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
+    public void deleteGame() throws Exception {
+        doNothing().when(genreService).delete(anyLong());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/genres/delete/{id}", 3).
+                content(asJsonString(genreTest3)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
     @Test
-    public void updateGame() {
+    public void updateGame() throws Exception {
+        when(genreService.update(any(Genre.class))).thenReturn(true);
         genreTest3.setName(genreTest3.getName()+"_UPDATE");
-        mockMvc.perform(MockMvcRequestBuilders.post("/genres/update").
+        mockMvc.perform(MockMvcRequestBuilders.put("/genres/update").
                 content(asJsonString(genreTest3)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
 
     }

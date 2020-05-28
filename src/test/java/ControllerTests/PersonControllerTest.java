@@ -1,49 +1,39 @@
 package ControllerTests;
 
-import CompanyServiceImplTest.TestBaseConfig;
-import com.epam.bh.controllers.PersonController;
 import com.epam.bh.entities.Person;
+import com.epam.bh.services.serviceImpl.PersonServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes =  {TestBaseConfig.class, PersonController.class})
-@WebAppConfiguration
-@EnableWebMvc
-@TestPropertySource("classpath:application.properties")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = com.epam.bh.SpringCoreApplication.class)
+@AutoConfigureMockMvc
 public class PersonControllerTest {
+    @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private EntityManager entityManager;
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+
+    @MockBean
+    PersonServiceImpl personService;
 
     public static String asJsonString(final Object obj) {
         try {
@@ -53,72 +43,49 @@ public class PersonControllerTest {
         }
     }
 
-    static Person personTest1 = new Person();
-    static Person personTest2 = new Person();
-    static Person personTest3 = new Person();
-
-    static {
-       personTest1.setName("PersonTest1");
-       personTest2.setName("PersonTest2");
-       personTest3.setName("PersonTest3");
-    }
+    static Person personTest1 = new Person(1L,"Person1");
+    static Person personTest2 = new Person(2L,"Person2");
+    static Person personTest3 = new Person(3L,"Person3");;
 
 
-    @BeforeAll
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        entityManager.getTransaction().begin();
-        entityManager.persist(personTest1);
-        entityManager.persist(personTest2);
-        entityManager.persist(personTest3);
-        entityManager.getTransaction().commit();
-    }
-
-    @AfterAll
-    public void endTest(){
-        entityManager.close();
-        entityManagerFactory.close();
-
-    }
-
-    @SneakyThrows
     @Test
-    public void addPerson() {
-        Person personTestAddControllerMethod = new Person();
-        personTestAddControllerMethod.setName("PersonControllerTestMethodAdd");
+    public void addPerson() throws Exception {
+        when(personService.add(any(Person.class))).thenReturn(personTest1);
         mockMvc.perform(MockMvcRequestBuilders.post("/persons/add").
-                content(asJsonString(personTestAddControllerMethod)).contentType(MediaType.APPLICATION_JSON).
+                content(asJsonString(personTest1)).contentType(MediaType.APPLICATION_JSON).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
     @Test
-    public void getPersonById(){
+    public void getPersonById() throws Exception {
+        when(personService.getById(anyLong())).thenReturn(personTest1);
         mockMvc.perform(MockMvcRequestBuilders.get("/persons/getById/{id}",1).
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk()).
-                andExpect(jsonPath("$.id").value("1"));
+                andExpect(jsonPath("$.id").value("1")).
+                andExpect(jsonPath("$.name").value("Person1"));
     }
 
-    @SneakyThrows
     @Test
-    public void getAllPersons(){
+    public void getAllPersons() throws Exception {
+        when(personService.getAll()).thenReturn(List.of(personTest1,personTest2,personTest3));
         mockMvc.perform(MockMvcRequestBuilders.get("/persons/getAll").
                 accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
     @Test
-    public void deletePerson() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/persons/delete/{id}", 2).
-                content(asJsonString(personTest2)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
+    public void deletePerson() throws Exception {
+        doNothing().when(personService).delete(anyLong());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/persons/delete/{id}", 3).
+                content(asJsonString(personTest3)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 
-    @SneakyThrows
     @Test
-    public void updatePerson() {
-        personTest3.setName(personTest3.getName()+"_UPDATE");
-        mockMvc.perform(MockMvcRequestBuilders.post("/persons/update").
-                content(asJsonString(personTest3)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
+    public void updatePerson() throws Exception {
+        when(personService.update(any(Person.class))).thenReturn(true);
+        personTest2.setName(personTest2.getName()+"_UPDATE");
+        mockMvc.perform(MockMvcRequestBuilders.put("/persons/update").
+                content(asJsonString(personTest2)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).
+                andDo(print()).andExpect(status().isOk());
 
     }
 

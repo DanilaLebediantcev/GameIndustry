@@ -25,6 +25,12 @@ import java.util.List;
 @ToString(of = {"id","name"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Genre.class)
 public class Genre {
+    public Genre() {
+    }
+    public Genre(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,8 +50,5 @@ public class Genre {
     @ManyToMany(mappedBy = "genreList", cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties({"genreList"})
     List<Game> gameList = new ArrayList<>();
-
-    public Genre() {
-    }
 
 }
